@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import task from './routes/task.js'
+import task from './route/task.js'
 
 dotenv.config();
 const app = express();
@@ -16,6 +16,12 @@ app.use(express.json());
 
 // Routes
 app.use(TASK_ROUTE, task)
+
+app.use('*', (req, res, next) => {
+    res.status(404).json({
+        message: 'Route not found'
+    })
+})
 
 
 app.listen(PORT, () => {
