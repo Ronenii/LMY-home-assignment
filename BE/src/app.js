@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import express from 'express';
+import cors from cors;
 import task from './route/task.js'
 
 dotenv.config();
@@ -14,6 +15,9 @@ const TASK_ROUTE = process.env.TASK_API_ROUTE || '/api/task';
 // Json parser
 app.use(express.json());
 
+// CORS
+app.use(cors);
+
 // Routes
 app.use(TASK_ROUTE, task)
 
@@ -23,7 +27,7 @@ app.use('*', (req, res, next) => {
     })
 })
 
-
+// Server running
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 })
