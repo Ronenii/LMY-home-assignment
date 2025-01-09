@@ -10,10 +10,14 @@ export const getTaskByIdService = async (id) => {
   return result.rows[0];
 };
 
-export const createTaskService = async (title, due_date = null) => {
+export const createTaskService = async (
+  title,
+  description = "",
+  due_date = null
+) => {
   const result = await pool.query(
-    "INSERT INTO tasks (title, due_date) VALUES ($1, $2) RETURNING *",
-    [title, due_date]
+    "INSERT INTO tasks (title, description, due_date) VALUES ($1, $2, $3) RETURNING *",
+    [title, description, due_date]
   );
 
   return result.rows[0];
@@ -24,6 +28,27 @@ export const updateTaskStatusService = async (id, status) => {
     "UPDATE tasks SET status=$1 WHERE id = $2 RETURNING *",
     [status, id]
   );
+
+  return result.rows[0];
+};
+
+export const updateTaskDetailsService = async (
+  id,
+  title,
+  description = "",
+  dueDate = null
+) => {
+  let query = "UPDATE tasks SET title=$1, description=$2";
+  const params = [title, description];
+
+  if (dueDate !== null) {
+    query += ", due_date=$3";
+    params.push(dueDate);
+  }
+
+  query += " WHERE id=$4 RETURNING *";
+  params.push(id);
+  const result = await pool.query(query, params);
 
   return result.rows[0];
 };

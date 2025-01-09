@@ -15,7 +15,10 @@ router.get("/", getTasks);
 router.post("/", createTask);
 
 // Update task status
-router.put("/:id", updateTaskStatus);
+router.put("/status/:id", updateTaskStatus);
+
+// Update task details
+router.put("/details/:id", updateTaskStatus);
 
 // Delete task
 router.delete("/:id", deleteTask);
