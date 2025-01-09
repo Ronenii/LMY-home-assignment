@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import taskRoutes from "./route/task.js";
 import healthRoutes from "./route/health.js";
+import errorHandling from "./middleware/errorHandler.js";
 
 dotenv.config();
 const app = express();
@@ -29,6 +30,9 @@ app.use(HEALTH_ROUTE, healthRoutes);
 app.use("*", (req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
+
+// Error handler
+app.use(errorHandling);
 
 // Server running
 app.listen(PORT, () => {
