@@ -37,6 +37,10 @@ export const getTaskById = async (req, res, next) => {
 
 export const createTask = async (req, res, next) => {
   const { title, due_date } = req.body;
+
+  if (!title) {
+    return handleResponse(res, 400, "Task title is required.");
+  }
   try {
     const newTask = await createTaskService(title, due_date);
     handleResponse(res, 201, "Task created successfully.", newTask);
@@ -47,18 +51,29 @@ export const createTask = async (req, res, next) => {
 
 export const updateTaskStatus = async (req, res, next) => {
   const { status } = req.body;
+  const { id } = req.params;
+
+  if (!id) {
+    return handleResponse(res, 400, "Task ID is required.");
+  }
+
   try {
-    const task = await updateTaskStatusService(req.params.id, status);
-    handleResponse(res, 204, `Task ${id} status updated to ${status}.`, task);
+    const task = await updateTaskStatusService(id, status);
+    handleResponse(res, 200, `Task ${id} status updated to ${status}.`, task);
   } catch (err) {
     next(err);
   }
 };
 
 export const deleteTask = async (req, res, next) => {
+  const { id } = req.params;
+  if (!id) {
+    return handleResponse(res, 400, "Task ID is required.");
+  }
   try {
-    const deletedTask = await deleteTaskService(req.params.id);
-    if (!user) {
+    const deletedTask = await deleteTaskService(id);
+
+    if (!deletedTask) {
       return handleResponse(res, 404, `Task with id ${id} not found.`);
     }
     handleResponse(res, 200, `Deleted task ${id} successfully.`, deletedTask);
