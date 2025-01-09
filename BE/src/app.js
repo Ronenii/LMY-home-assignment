@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
-import task from "./route/task.js";
+import taskRoutes from "./route/task.js";
 import pool from "./config/db.js";
 
 dotenv.config();
@@ -37,7 +37,7 @@ app.get("/db_health", async (req, res) => {
 
 // Routes
 
-app.use(TASK_ROUTE, task);
+app.use(TASK_ROUTE, taskRoutes);
 
 // Handle unmatched routes
 app.use("*", (req, res) => {
