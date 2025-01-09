@@ -2,6 +2,7 @@ import {
   createTask,
   deleteTask,
   getTasks,
+  updateTaskDetails,
   updateTaskStatus,
 } from "../controller/taskController.js";
 import express from "express";
@@ -18,7 +19,7 @@ router.post("/", createTask);
 router.put("/status/:id", updateTaskStatus);
 
 // Update task details
-router.put("/details/:id", updateTaskStatus);
+router.put("/details/:id", updateTaskDetails);
 
 // Delete task
 router.delete("/:id", deleteTask);

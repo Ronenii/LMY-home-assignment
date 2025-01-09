@@ -41,15 +41,17 @@ export const updateTaskDetailsService = async (
   let query = "UPDATE tasks SET title=$1, description=$2";
   const params = [title, description];
 
+  // Conditionally add due_date to the query
   if (dueDate !== null) {
     query += ", due_date=$3";
     params.push(dueDate);
   }
 
-  query += " WHERE id=$4 RETURNING *";
+  // Finalize query with WHERE clause
+  query += ` WHERE id=$${params.length + 1} RETURNING *`;
   params.push(id);
-  const result = await pool.query(query, params);
 
+  const result = await pool.query(query, params);
   return result.rows[0];
 };
 

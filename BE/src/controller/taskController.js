@@ -15,24 +15,32 @@ const handleResponse = (res, status, message, data = null) => {
   });
 };
 
-const validateIsIdProvided = (id) => {
+const validateIsIdProvided = (res, id) => {
   if (!id) {
-    return handleResponse(res, 400, "Task ID is required.");
+    handleResponse(res, 400, "Task ID is required.");
+    return false;
   }
+  return true;
 };
 
-const validateDueDate = (dueDate) => {
+const validateDueDate = (res, dueDate) => {
   if (dueDate) {
     const now = new Date();
     const dueDateData = new Date(dueDate);
     if (dueDateData <= now) {
-      return handleResponse(
-        res,
-        400,
-        "If a due date is provided it needs to be in the future."
-      );
+      handleResponse(res, 400, "Due date must be null or in the future.");
+      return false;
     }
   }
+  return true;
+};
+
+const validateTaskFound = (res, task) => {
+  if (!task) {
+    handleResponse(res, 404, "Task ID was not found.");
+    return false;
+  }
+  return true;
 };
 
 export const getTasks = async (req, res, next) => {
@@ -47,13 +55,11 @@ export const getTasks = async (req, res, next) => {
 export const getTaskById = async (req, res, next) => {
   const { id } = req.params.id;
 
-  validateIsIdProvided(id);
+  if (!validateIsIdProvided(res, id)) return;
 
   try {
     const task = await getTaskById(id);
-    if (!user) {
-      return handleResponse(res, 404, `Task with id ${id} not found.`);
-    }
+    if (!validateTaskFound(res, task)) return;
     handleResponse(res, 200, `Retrived task ${id}`, task);
   } catch (err) {
     next(err);
@@ -67,7 +73,7 @@ export const createTask = async (req, res, next) => {
     return handleResponse(res, 400, "Task title is required.");
   }
 
-  validateDueDate(dueDate);
+  if (!validateDueDate(res, dueDate)) return;
 
   try {
     const newTask = await createTaskService(title, description, dueDate);
@@ -81,10 +87,11 @@ export const updateTaskStatus = async (req, res, next) => {
   const { status } = req.body;
   const { id } = req.params;
 
-  validateIsIdProvided(id);
+  if (!validateIsIdProvided(res, id)) return;
 
   try {
     const task = await updateTaskStatusService(id, status);
+    if (!validateTaskFound(res, task)) return;
     handleResponse(res, 200, `Task ${id} status updated to ${status}.`, task);
   } catch (err) {
     next(err);
@@ -95,8 +102,8 @@ export const updateTaskDetails = async (req, res, next) => {
   const { title, details, dueDate } = req.body;
   const { id } = req.params;
 
-  validateIsIdProvided(id);
-  validateDueDate(dueDate);
+  if (!validateIsIdProvided(res, id)) return;
+  if (!validateDueDate(res, dueDate)) return;
 
   if (!title) {
     return handleResponse(res, 400, "Title must not be empty.");
@@ -104,6 +111,7 @@ export const updateTaskDetails = async (req, res, next) => {
 
   try {
     const task = await updateTaskDetailsService(id, title, details, dueDate);
+    if (!validateTaskFound(res, task)) return;
     handleResponse(res, 200, `Task ${id} details updated successfully.`, task);
   } catch (err) {
     next(err);
@@ -113,14 +121,11 @@ export const updateTaskDetails = async (req, res, next) => {
 export const deleteTask = async (req, res, next) => {
   const { id } = req.params;
 
-  validateIsIdProvided(id);
+  if (!validateIsIdProvided(id)) return;
 
   try {
     const deletedTask = await deleteTaskService(id);
-
-    if (!deletedTask) {
-      return handleResponse(res, 404, `Task with id ${id} not found.`);
-    }
+    if (!validateTaskFound(res, deleteTask)) return;
     handleResponse(res, 200, `Deleted task ${id} successfully.`, deletedTask);
   } catch (err) {
     next(err);
