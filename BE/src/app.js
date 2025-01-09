@@ -2,13 +2,14 @@ import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import taskRoutes from "./route/task.js";
-import pool from "./config/db.js";
+import healthRoutes from "./route/health.js";
 
 dotenv.config();
 const app = express();
 
 const PORT = process.env.PORT || 8000;
 const TASK_ROUTE = process.env.TASK_API_ROUTE || "/api/task";
+const HEALTH_ROUTE = process.env.HEALTH_ROUTE || "/health";
 
 // Middleware
 
@@ -18,26 +19,11 @@ app.use(express.json());
 // CORS
 app.use(cors());
 
-// Health Check
-app.get("/health", (req, res) => {
-  res.status(200).json({ message: "OK" });
-});
-
-// DB Health Check
-app.get("/db_health", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT current_database()");
-    res.status(200).json({
-      message: `Connected to: ${result.rows[0].current_database}`,
-    });
-  } catch (err) {
-    console.error("Error during query execution:", err);
-  }
-});
-
 // Routes
 
 app.use(TASK_ROUTE, taskRoutes);
+
+app.use(HEALTH_ROUTE, healthRoutes);
 
 // Handle unmatched routes
 app.use("*", (req, res) => {

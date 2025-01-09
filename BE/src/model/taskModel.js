@@ -1,4 +1,4 @@
-import pool from "../config/db";
+import pool from "../config/db.js";
 
 export const getAllTasksService = async () => {
   const result = await pool.query("SELECT * FROM tasks");
@@ -10,7 +10,7 @@ export const getTaskByIdService = async (id) => {
   return result.rows[0];
 };
 
-export const createTaskService = async (title, due_date) => {
+export const createTaskService = async (title, due_date = null) => {
   const result = await pool.query(
     "INSET INTO tasks (title, due_date) VALUES ($1, $2) RETURNING *",
     [title, due_date]

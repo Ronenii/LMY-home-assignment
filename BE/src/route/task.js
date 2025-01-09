@@ -2,6 +2,7 @@ import {
   createTask,
   deleteTask,
   getTasks,
+  updateTaskStatus,
 } from "../controller/taskController.js";
 import express from "express";
 
