@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  task-manager-db:
+    image: postgres:16.2
+    container_name: task-manager-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1
+      POSTGRES_DB: task_manager
+    volumes:
+      - ./BE/docker/db_data:/var/lib/postgresql/data
+      - ./BE/docker/init.sql:/docker-entrypoint-initdb.d/init.sql  # Maps the local SQL file ./docker/init.sql to the container’s initialization directory to run when the container starts.
+    networks:
+      - task-manager-network
+
+networks:
+  task-manager-network:
+    driver: bridge
