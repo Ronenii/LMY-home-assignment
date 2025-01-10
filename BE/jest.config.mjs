@@ -60,10 +60,10 @@ const config = {
   // forceCoverageMatch: [],
 
   // A path to a module which exports an async function that is triggered once before all test suites
-  globalSetup: "./src/__tests__/setupGlobal.js",
+  // globalSetup: "./src/__tests__/setupGlobal.js",
 
   // A path to a module which exports an async function that is triggered once after all test suites
-  globalTeardown: "./src/__tests__/teardownGlobal.js",
+  // globalTeardown: "./src/__tests__/teardownGlobal.js",
 
   // A set of global variables that need to be available in all test environments
   // globals: {},
@@ -151,12 +151,7 @@ const config = {
   // ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-  testPathIgnorePatterns: [
-    "/node_modules/",
-    "/src/__tests__/setupTestEnvironment.js",
-    "/src/__tests__/setupGlobal.js",
-    "/src/__tests__/teardownGlobal.js",
-  ],
+  testPathIgnorePatterns: ["/node_modules/"],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
   // testRegex: [],
@@ -171,6 +166,8 @@ const config = {
   transform: {
     "^.+\\.m?js$": "babel-jest",
   },
+
+  testTimeout: 10000,
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [

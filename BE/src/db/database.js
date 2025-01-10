@@ -1,16 +1,26 @@
 import pkg from "pg";
 import dotenv from "dotenv";
-import { getDatabaseUri } from "../__tests__/setupTestEnvironment.js";
 
 const { Pool } = pkg;
 
-// Choose the connection string based on the environment
-const connectionString =
-  process.env.NODE_ENV === "test" ? getDatabaseUri() : process.env.DATABASE_URL;
+dotenv.config();
 
-const pool = new Pool({
-  connectionString,
-});
+const connectionString =
+  process.env.NODE_ENV === "test"
+    ? process.env.TEST_DATABASE_URL
+    : process.env.DATABASE_URL;
+
+if (!connectionString) {
+  throw new Error(
+    "No database connection string provided. Please set DATABASE_URL or TEST_DATABASE_URL in your .env file."
+  );
+}
+
+const pool = new Pool({ connectionString });
 
 export const queryDB = (text, params) => pool.query(text, params);
-export const closeDB = () => pool.end();
+
+export const closeDB = async () => {
+  await pool.end();
+  console.log("Database connection pool has been closed.");
+};

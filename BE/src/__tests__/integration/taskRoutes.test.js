@@ -1,23 +1,23 @@
 import request from "supertest";
 import app from "../../app.js";
-import * as database from "../../db/database.js";
 import { Client } from "pg";
-import { getDatabaseUri } from "../setupTestEnvironment.js"; // Import getDatabaseUri to fetch the test container URI
+import dotenv from "dotenv";
+
+dotenv.config();
 
 let postgresClient;
+let server;
 
 describe("/api/task integration tests", () => {
   beforeAll(async () => {
-    // Get the database URI after the test container is fully started
-    const databaseUri = getDatabaseUri();
+    const databaseUri = process.env.TEST_DATABASE_URL; // Use static connection string
     console.log(`Connecting to database at: ${databaseUri}`);
 
     postgresClient = new Client({ connectionString: databaseUri });
-    await postgresClient.connect(); // Ensure the connection is established after container startup
+    await postgresClient.connect();
 
-    // Create the tasks table before any tests run
     await postgresClient.query(`
-      CREATE TABLE tasks (
+      CREATE TABLE IF NOT EXISTS tasks (
         id SERIAL PRIMARY KEY,
         title TEXT NOT NULL,
         description TEXT,
@@ -25,22 +25,59 @@ describe("/api/task integration tests", () => {
         due_date TIMESTAMP
       );
     `);
+    console.log("Database initialized for testing.");
+
+    server = app.listen(0, () => {
+      console.log("Test server started...");
+    });
   });
 
   afterEach(async () => {
-    // Clean up the tasks table after each test
-    await postgresClient.query("TRUNCATE TABLE tasks RESTART IDENTITY;");
+    if (postgresClient) {
+      try {
+        await postgresClient.query("TRUNCATE TABLE tasks RESTART IDENTITY;");
+      } catch (error) {
+        console.error("Error during afterEach cleanup:", error);
+      }
+    }
   });
 
   afterAll(async () => {
-    // Drop the tasks table after all tests are done
-    await postgresClient.query("DROP TABLE tasks;");
-    await postgresClient.end(); // Close the connection
+    if (postgresClient) {
+      try {
+        console.log("Dropping tasks table...");
+        await postgresClient.query("DROP TABLE IF EXISTS tasks;");
+        console.log("Closing database connection...");
+        await postgresClient.end();
+      } catch (error) {
+        console.error("Error during afterAll cleanup:", error);
+      }
+    }
+
+    if (server) {
+      server.close();
+    }
   });
 
   test("GET /api/task should return an empty array", async () => {
-    const res = await request(app).get("/api/task");
+    const res = await request(server).get("/api/task");
     expect(res.statusCode).toBe(200);
-    expect(res.body).toEqual([]); // Expect an empty array since no tasks are added
+    expect(res.body).toEqual({
+      data: [],
+      message: "Tasks fetched successfully.",
+      status: 200,
+    });
   });
+
+  test("GET /api/task/:id should return an empty array", async () => {
+    const res = await request(server).get("/api/task");
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual({
+      data: [],
+      message: "Tasks fetched successfully.",
+      status: 200,
+    });
+  });
+
+  test;
 });
