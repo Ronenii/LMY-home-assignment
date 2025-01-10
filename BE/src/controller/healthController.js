@@ -1,4 +1,4 @@
-import pool from "../config/db.js";
+import { queryDB } from "../db/database.js";
 
 // Health Check Controller
 export const healthCheck = async (req, res) => {
@@ -8,7 +8,7 @@ export const healthCheck = async (req, res) => {
   };
 
   try {
-    await pool.query("SELECT current_database()");
+    await queryDB("SELECT current_database()");
     dbStatus.status = "connected";
   } catch (err) {
     dbStatus.error = err.message;
