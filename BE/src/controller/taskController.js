@@ -2,6 +2,7 @@ import {
   createTaskService,
   deleteTaskService,
   getAllTasksService,
+  getTaskByIdService,
   updateTaskDetailsService,
   updateTaskStatusService,
 } from "../model/taskModel.js";
@@ -53,12 +54,12 @@ export const getTasks = async (req, res, next) => {
 };
 
 export const getTaskById = async (req, res, next) => {
-  const { id } = req.params.id;
+  const id = req.params.id;
 
   if (!validateIsIdProvided(res, id)) return;
 
   try {
-    const task = await getTaskById(id);
+    const task = await getTaskByIdService(id);
     if (!validateTaskFound(res, task)) return;
     handleResponse(res, 200, `Retrived task ${id}`, task);
   } catch (err) {
@@ -85,7 +86,7 @@ export const createTask = async (req, res, next) => {
 
 export const updateTaskStatus = async (req, res, next) => {
   const { status } = req.body;
-  const { id } = req.params;
+  const id = req.params.id;
 
   if (!validateIsIdProvided(res, id)) return;
 
@@ -100,7 +101,7 @@ export const updateTaskStatus = async (req, res, next) => {
 
 export const updateTaskDetails = async (req, res, next) => {
   const { title, details, dueDate } = req.body;
-  const { id } = req.params;
+  const id = req.params.id;
 
   if (!validateIsIdProvided(res, id)) return;
   if (!validateDueDate(res, dueDate)) return;
@@ -119,9 +120,9 @@ export const updateTaskDetails = async (req, res, next) => {
 };
 
 export const deleteTask = async (req, res, next) => {
-  const { id } = req.params;
+  const id = req.params.id;
 
-  if (!validateIsIdProvided(id)) return;
+  if (!validateIsIdProvided(res, id)) return;
 
   try {
     const deletedTask = await deleteTaskService(id);

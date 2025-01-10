@@ -8,7 +8,6 @@ import errorHandling from "./middleware/errorHandler.js";
 dotenv.config();
 const app = express();
 
-const PORT = process.env.PORT || 8000;
 const TASK_ROUTE = process.env.TASK_API_ROUTE || "/api/task";
 const HEALTH_ROUTE = process.env.HEALTH_ROUTE || "/health";
 
@@ -34,7 +33,4 @@ app.use("*", (req, res) => {
 // Error handler
 app.use(errorHandling);
 
-// Server running
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+export default app;

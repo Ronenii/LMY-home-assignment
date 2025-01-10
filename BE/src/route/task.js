@@ -1,6 +1,7 @@
 import {
   createTask,
   deleteTask,
+  getTaskById,
   getTasks,
   updateTaskDetails,
   updateTaskStatus,
@@ -11,6 +12,9 @@ const router = express.Router();
 
 // Get all tasks
 router.get("/", getTasks);
+
+// Get task by ID
+router.get("/:id", getTaskById);
 
 // Create task
 router.post("/", createTask);
