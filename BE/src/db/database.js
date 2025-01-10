@@ -1,13 +1,15 @@
 import pkg from "pg";
 import dotenv from "dotenv";
+import { getDatabaseUri } from "../__tests__/setupTestEnvironment.js";
+
 const { Pool } = pkg;
 
-dotenv.config({
-  path: process.env.NODE_ENV === "test" ? ".env.test" : ".env",
-});
+// Choose the connection string based on the environment
+const connectionString =
+  process.env.NODE_ENV === "test" ? getDatabaseUri() : process.env.DATABASE_URL;
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString,
 });
 
 export const queryDB = (text, params) => pool.query(text, params);
