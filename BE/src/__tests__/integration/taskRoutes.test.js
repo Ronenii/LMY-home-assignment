@@ -17,12 +17,13 @@ describe("/api/task integration tests", () => {
     await postgresClient.connect();
 
     await postgresClient.query(`
-      CREATE TABLE IF NOT EXISTS tasks (
-        id SERIAL PRIMARY KEY,
-        title TEXT NOT NULL,
-        description TEXT,
-        status TEXT DEFAULT 'open',
-        due_date TIMESTAMP
+      CREATE TABLE tasks (
+          id SERIAL PRIMARY KEY,
+          title VARCHAR(255) NOT NULL,
+          description TEXT,
+          due_date DATE,
+          status VARCHAR(50) DEFAULT 'open',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
     console.log("Database initialized for testing.");
@@ -79,5 +80,27 @@ describe("/api/task integration tests", () => {
     });
   });
 
-  test;
+  test("POST /api/task should create a new task", async () => {
+    const newTask = {
+      title: "Test",
+      description: "Test",
+      due_date: "2080-01-01",
+    };
+
+    const res = await request(server).post("/api/task").send(newTask);
+    expect(res.statusCode).toBe(201);
+
+    expect(res.body).toEqual({
+      status: 201,
+      message: "Task created successfully.",
+      data: expect.objectContaining({
+        id: 1,
+        title: newTask.title,
+        description: newTask.description,
+        status: "open",
+        due_date: newTask.due_date,
+        created_at: expect.any(String),
+      }),
+    });
+  });
 });

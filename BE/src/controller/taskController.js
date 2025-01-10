@@ -7,6 +7,8 @@ import {
   updateTaskStatusService,
 } from "../model/taskModel.js";
 
+import { format } from "date-fns";
+
 // Standardized response function
 const handleResponse = (res, status, message, data = null) => {
   res.status(status).json({
@@ -68,17 +70,21 @@ export const getTaskById = async (req, res, next) => {
 };
 
 export const createTask = async (req, res, next) => {
-  const { title, description, due_date: dueDate } = req.body;
+  const { title, description, due_date } = req.body;
 
   if (!title) {
     return handleResponse(res, 400, "Task title is required.");
   }
 
-  if (!validateDueDate(res, dueDate)) return;
-
   try {
-    const newTask = await createTaskService(title, description, dueDate);
-    handleResponse(res, 201, "Task created successfully.", newTask);
+    const newTask = await createTaskService(title, description, due_date);
+
+    const responseData = {
+      ...newTask,
+      due_date: format(new Date(newTask.due_date), "yyyy-MM-dd"), // Ensure consistent formatting
+    };
+
+    handleResponse(res, 201, "Task created successfully.", responseData);
   } catch (err) {
     next(err);
   }
