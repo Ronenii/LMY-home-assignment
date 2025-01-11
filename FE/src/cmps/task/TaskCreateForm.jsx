@@ -5,7 +5,7 @@ export default function TaskCreateForm({ onTaskCreated }) {
   const [taskData, setTaskData] = useState({
     title: "",
     description: "",
-    dueDate: ""
+    due_date: ""
   });
 
   const handleChange = (e) => {
@@ -15,18 +15,17 @@ export default function TaskCreateForm({ onTaskCreated }) {
 
   const handleSubmit = async () => {
     try {
-      await createTask(taskData);
+      await onTaskCreated(taskData); // Pass task data to the parent handler
       setShowForm(false); // Close the form
-      setTaskData({ title: "", description: "", dueDate: "" }); // Reset form data
-      onTaskCreated(); // Notify parent to refresh tasks
+      setTaskData({ title: "", description: "", dueDate: "" }); // Reset form
     } catch (error) {
       console.error("Failed to create task:", error);
     }
   };
 
   const handleCancel = () => {
-    setShowForm(false); // Close the form
-    setTaskData({ title: "", description: "", dueDate: "" }); // Reset form data
+    setShowForm(false);
+    setTaskData({ title: "", description: "", dueDate: "" });
   };
 
   return (
@@ -59,9 +58,9 @@ export default function TaskCreateForm({ onTaskCreated }) {
           <div>
             <input
               type="date"
-              id="dueDate"
-              name="dueDate"
-              value={taskData.dueDate}
+              id="due_date"
+              name="due_date"
+              value={taskData.due_date}
               onChange={handleChange}
             />
           </div>

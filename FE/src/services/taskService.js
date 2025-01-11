@@ -13,7 +13,8 @@ const taskApiUrl =
   export const fetchTasks = async (filters = {}) => {
     try {
       const response = await axiosInstance.get("", { params: filters });
-      return response.data; // Axios automatically parses JSON
+      console.log("API Response:", response.data); // Debugging
+      return response.data.data || []; // Access the `data` property directly
     } catch (error) {
       console.error("Error fetching tasks:", error);
       throw error.response?.data || "Failed to fetch tasks";
@@ -22,6 +23,7 @@ const taskApiUrl =
 
   export const createTask = async (taskData) => {
     try {
+      console.log("Submitted task data:",taskData)
       const response = await axiosInstance.post("", taskData);
       return response.data;
     } catch (error) {

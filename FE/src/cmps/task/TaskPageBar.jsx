@@ -1,15 +1,18 @@
 import { useState } from "react";
 
-export default function TaskPageBar() {
+export default function TaskPageBar({ onFilterSubmit }) {
   const [filters, setFilters] = useState({
     status: "",
     orderBy: "",
     order: ""
   });
 
-  const handleSubmit = () => {
-    console.log("Submitting filters:", filters);
-    // TODO: fetch tasks with filters
+  const handleSubmit = async () => {
+    try {
+      await onFilterSubmit(filters);
+    } catch (err) {
+      console.error("failed to fetch filtered tasks:", err);
+    }
   };
 
   const handleFiltersChange = (e) => {

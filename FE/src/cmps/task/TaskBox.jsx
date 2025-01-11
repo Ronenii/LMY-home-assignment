@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { updateTaskStatus } from "../../services/taskService";
 
-export default function TaskBox({ taskData: initialTaskData }) {
+export default function TaskBox({ taskData: initialTaskData, onDelete, onUpdate }) {
   const [taskData, setTaskData] = useState(initialTaskData);
   const [isEditingDetails, setIsEditingDetails] = useState(false);
 
@@ -13,21 +14,35 @@ export default function TaskBox({ taskData: initialTaskData }) {
     setIsEditingDetails(!isEditingDetails);
   };
 
-  const handleSubmit = () => {
-    // TODO: submit details to task service
-
-    // await res, if successful the set editing details
-    setIsEditingDetails(false);
+  const handleSubmit = async () => {
+    try {
+      await onUpdate(taskData.id, {
+        title: taskData.title,
+        description: taskData.description,
+        due_date: taskData.due_date
+      });
+      setIsEditingDetails(false);
+    } catch (err) {
+      console.error("Failed to update task:", err);
+    }
   };
 
-  const handleDelete = () => {
-    // TODO: Add service call to delete and
+  const handleDelete = async () => {
+    try {
+      await onDelete(taskData.id);
+    } catch (error) {
+      console.error("Failed to delete task", error);
+    }
   };
 
-  const handleStatusChange = (e) => {
+  const handleStatusChange = async (e) => {
     const newStatus = e.target.checked ? "done" : "open";
-    setTaskData({ ...initialTaskData, status: newStatus });
-    // TODO: use task service to submit changes.
+    try {
+      await updateTaskStatus(taskData.id, newStatus);
+      setTaskData({ ...taskData, status: newStatus });
+    } catch (error) {
+      console.error("Failed to update task status:", error);
+    }
   };
 
   return (
@@ -72,7 +87,7 @@ export default function TaskBox({ taskData: initialTaskData }) {
             </div>
           </div>
         ) : (
-          <div clasName="task-presentation">
+          <div className="task-presentation">
             <div className="task-title">
               <h3>{initialTaskData.title}</h3>
             </div>
