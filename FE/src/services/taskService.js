@@ -9,8 +9,9 @@ export async function fetchTasks() {
     const res = await axios.get(taskApiUrl);
 
     console.log("got polls successfully", res.data);
-    return res.data;
+    return res.data.data;
   } catch (err) {
     console.log("Error fetching tasks. Error info:", err);
+    return [];
   }
 }

@@ -1,14 +1,33 @@
+import { useEffect, useState } from "react";
 import TaskBox from "../cmps/task/TaskBox";
+import { fetchTasks } from "../services/taskService";
 
 export default function TaskPage() {
-  const taskData = {
-    id: 1,
-    title: "example",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eveniet excepturi, laboriosam maiores molestias vitae deleniti magni? Nemo, rem eligendi. Aspernatur officia error nulla tempora cumque quidem, dolorum quibusdam fuga eum.",
-    due_date: "2025-01-20",
-    status: "open",
-    created_at: "2025-01-11",
-  };
-  return <TaskBox taskData={taskData} />;
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const getTasks = async () => {
+      const fetchedTasks = await fetchTasks();
+      setTasks(fetchTasks);
+      setLoading(false);
+    };
+    getTasks();
+  }, []);
+
+  if (loading) {
+    return <p>Fetching tasks...</p>;
+  }
+
+  if (tasks.length === 0) {
+    return <p>No tasks available.</p>;
+  }
+
+  return (
+    <div className="task-list">
+      {tasks.map((task) => (
+        <TaskBox key={task.id} taskData={task} />
+      ))}
+    </div>
+  );
 }
