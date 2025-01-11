@@ -44,7 +44,7 @@ const taskApiUrl =
 
   export const updateTaskStatus = async (id, status) => {
     try {
-      const response = await axiosInstance.put(`status/${id}`, status);
+      const response = await axiosInstance.put(`status/${id}`, {status});
       return response.data
     }catch (error) {
       console.error("Error updating task:", error);

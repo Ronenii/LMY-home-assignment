@@ -45,7 +45,7 @@ const validateTaskFound = (res, task) => {
 };
 
 const validateCorrectStatus = (res, status) => {
-  const validStatuses = ["open", " done"];
+  const validStatuses = ["open", "done"];
   if (status && !validStatuses.includes(status.toLowerCase())) {
     handleResponse(res, 400, "Status must be 'open' or 'done'");
     return false;
@@ -133,18 +133,18 @@ export const updateTaskStatus = async (req, res, next) => {
 };
 
 export const updateTaskDetails = async (req, res, next) => {
-  const { title, details, dueDate } = req.body;
+  const { title, description, due_date } = req.body;
   const id = req.params.id;
 
   if (!validateIsIdProvided(res, id)) return;
-  if (!validateDueDate(res, dueDate)) return;
+  if (!validateDueDate(res, due_date)) return;
 
   if (!title) {
     return handleResponse(res, 400, "Title must not be empty.");
   }
 
   try {
-    const task = await updateTaskDetailsService(id, title, details, dueDate);
+    const task = await updateTaskDetailsService(id, title, description, due_date);
     if (!validateTaskFound(res, task)) return;
     handleResponse(res, 200, `Task ${id} details updated successfully.`, task);
   } catch (err) {

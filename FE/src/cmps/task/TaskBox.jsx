@@ -7,7 +7,7 @@ export default function TaskBox({ taskData: initialTaskData, onDelete, onUpdate 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEditableTaskData({ ...taskData, [name]: value });
+    setTaskData((prevState) => ({ ...prevState, [name]: value })); // Ensure state is updated
   };
 
   const toggleEditTaskDetails = () => {
@@ -49,7 +49,7 @@ export default function TaskBox({ taskData: initialTaskData, onDelete, onUpdate 
     <section className="taskbox-container">
       <div className="task-details">
         <div className="task-creation-date">
-          <h5>Created at: {initialTaskData.created_at}</h5>
+          <h5>Created at: {taskData.created_at}</h5>
         </div>
         {isEditingDetails ? (
           <div className="task-edit-form">
@@ -57,7 +57,7 @@ export default function TaskBox({ taskData: initialTaskData, onDelete, onUpdate 
               <input
                 type="text"
                 name="title"
-                value={initialTaskData.title}
+                value={taskData.title}
                 onChange={handleChange}
                 placeholder="Task title"
               />
@@ -65,16 +65,16 @@ export default function TaskBox({ taskData: initialTaskData, onDelete, onUpdate 
             <div className="task-description">
               <textarea
                 name="description"
-                value={initialTaskData.description}
+                value={taskData.description}
                 onChange={handleChange}
                 placeholder="Task Description"
               ></textarea>
             </div>
             <div className="task-due-date">
               <input
-                type="text"
-                name="dueDate"
-                value={initialTaskData.due_date}
+                type="date"
+                name="due_date"
+                value={taskData.due_date}
                 onChange={handleChange}
               />
             </div>
@@ -89,12 +89,12 @@ export default function TaskBox({ taskData: initialTaskData, onDelete, onUpdate 
         ) : (
           <div className="task-presentation">
             <div className="task-title">
-              <h3>{initialTaskData.title}</h3>
+              <h3>{taskData.title}</h3>
             </div>
             <div className="task-description"></div>
-            <p>{initialTaskData.description}</p>
+            <p>{taskData.description}</p>
             <div className="task-due-date">
-              <h4>Due by: {initialTaskData.due_date}</h4>
+              <h4>Due by: {taskData.due_date}</h4>
             </div>
             <div>
               <button onClick={toggleEditTaskDetails}>Edit details</button>
