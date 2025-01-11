@@ -57,18 +57,18 @@ describe("/api/task integration tests", () => {
 
   // Delete table from test container
   afterAll(async () => {
-    if (postgresClient) {
-      try {
+    try {
+      if (postgresClient) {
         console.log("Dropping tasks table...");
         await postgresClient.query("DROP TABLE IF EXISTS tasks;");
         console.log("Closing database connection...");
         await postgresClient.end();
-
-        if (server) {
-          server.close();
-        }
-      } catch (error) {
-        console.error("Error during afterAll cleanup:", error);
+      }
+    } catch (error) {
+      console.error("Error during afterAll cleanup:", error);
+    } finally {
+      if (server) {
+        await server.close();
       }
     }
   });
