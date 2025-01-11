@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import TaskBox from "../cmps/task/TaskBox";
-import { fetchTasks } from "../services/taskService";
+import { fetchAllTasks } from "../services/taskService";
 import TaskPageBar from "../cmps/task/TaskPageBar";
 import TaskCreateForm from "../cmps/task/TaskCreateForm";
 
@@ -10,7 +10,7 @@ export default function TaskPage() {
 
   const fetchAllTasks = async () => {
     setLoading(true);
-    const fetchedTasks = await fetchTasks();
+    const fetchedTasks = await fetchAllTasks();
     setTasks(fetchedTasks);
     setLoading(false);
   };

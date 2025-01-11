@@ -3,15 +3,59 @@ import axios from "axios";
 const taskApiUrl =
   import.meta.env.VITE_BACKEND_URL + import.meta.env.VITE_TASK_URL;
 
-export async function fetchTasks() {
-  console.log("Trying to fetch tasks.");
-  try {
-    const res = await axios.get(taskApiUrl);
+  const axiosInstance = axios.create({
+    baseURL: taskApiUrl,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
-    console.log("got polls successfully", res.data);
-    return res.data.data;
-  } catch (err) {
-    console.log("Error fetching tasks. Error info:", err);
-    return [];
+  export const fetchTasks = async (filters = {}) => {
+    try {
+      const response = await axiosInstance.get("", { params: filters });
+      return response.data; // Axios automatically parses JSON
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+      throw error.response?.data || "Failed to fetch tasks";
+    }
+  };
+
+  export const createTask = async (taskData) => {
+    try {
+      const response = await axiosInstance.post("", taskData);
+      return response.data;
+    } catch (error) {
+      console.error("Error creating task:", error);
+      throw error.response?.data || "Failed to create task";
+    }
+  };
+
+  export const updateTaskDetails = async (id, updatedData) => {
+    try {
+      const response = await axiosInstance.put(`details/${id}`, updatedData);
+      return response.data;
+    } catch (error) {
+      console.error("Error updating task:", error);
+      throw error.response?.data || "Failed to update task details";
+    }
+  };
+
+  export const updateTaskStatus = async (id, status) => {
+    try {
+      const response = await axiosInstance.put(`status/${id}`, status);
+      return response.data
+    }catch (error) {
+      console.error("Error updating task:", error);
+      throw error.response?.data || "Failed to update task details";
+    }
   }
-}
+
+  export const deleteTask = async (id) => {
+    try {
+      await axiosInstance.delete(`/${id}`);
+      return true; 
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      throw error.response?.data || "Failed to delete task";
+    }
+  };
