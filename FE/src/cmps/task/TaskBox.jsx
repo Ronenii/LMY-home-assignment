@@ -20,6 +20,10 @@ export default function TaskBox({ taskData: initialTaskData }) {
     setIsEditingDetails(false);
   };
 
+  const handleDelete = () => {
+    // TODO: Add service call to delete and
+  };
+
   const handleStatusChange = (e) => {
     const newStatus = e.target.checked ? "done" : "open";
     setTaskData({ ...initialTaskData, status: newStatus });
@@ -60,8 +64,11 @@ export default function TaskBox({ taskData: initialTaskData }) {
               />
             </div>
             <div>
-              <button onClick={handleSubmit}>Submit</button>
               <button onClick={toggleEditTaskDetails}>Cancel</button>
+              <button onClick={handleSubmit}>Submit</button>
+              <button onClick={handleDelete} className="delete-button">
+                Delete
+              </button>
             </div>
           </div>
         ) : (
@@ -81,11 +88,7 @@ export default function TaskBox({ taskData: initialTaskData }) {
         )}
       </div>
       <div className="Task Status">
-        <input
-          type="checkbox"
-          checked={taskData.status === "done"}
-          onChange={handleStatusChange}
-        />
+        <input type="checkbox" checked={taskData.status === "done"} onChange={handleStatusChange} />
       </div>
     </section>
   );

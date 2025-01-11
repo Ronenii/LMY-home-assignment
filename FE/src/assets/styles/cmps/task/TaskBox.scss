@@ -75,10 +75,6 @@
     color: white;
     cursor: pointer;
     transition: background-color 0.3s ease;
-
-    &:hover {
-      background-color: #0056b3;
-    }
   }
 
   button + button {
@@ -90,5 +86,9 @@
     grid-column: 1 / span 2;
     display: flex;
     justify-content: center;
+  }
+
+  .delete-button {
+    background-color: #ff0000;
   }
 }
