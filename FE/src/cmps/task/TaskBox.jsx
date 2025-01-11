@@ -1,28 +1,44 @@
 import { useState } from "react";
 
-export default function TaskBox({ taskData }) {
-  const [taskData, setTaskData] = useState(taskData);
+export default function TaskBox({ taskData: initialTaskData }) {
+  const [taskData, setTaskData] = useState(initialTaskData);
   const [isEditingDetails, setIsEditingDetails] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEditableTaskData({ ...editableTaskData, [name]: value });
+    setEditableTaskData({ ...taskData, [name]: value });
   };
 
   const toggleEditTaskDetails = () => {
     setIsEditingDetails(!isEditingDetails);
   };
 
+  const handleSubmit = () => {
+    // TODO: submit details to task service
+
+    // await res, if successful the set editing details
+    setIsEditingDetails(false);
+  };
+
+  const handleStatusChange = (e) => {
+    const newStatus = e.target.checked ? "done" : "open";
+    setTaskData({ ...initialTaskData, status: newStatus });
+    // TODO: use task service to submit changes.
+  };
+
   return (
     <section className="taskbox-container">
       <div className="task-details">
+        <div className="task-creation-date">
+          <h5>Created at: {initialTaskData.created_at}</h5>
+        </div>
         {isEditingDetails ? (
           <div className="task-edit-form">
             <div className="task-title">
               <input
                 type="text"
                 name="title"
-                value={taskData.title}
+                value={initialTaskData.title}
                 onChange={handleChange}
                 placeholder="Task title"
               />
@@ -30,7 +46,7 @@ export default function TaskBox({ taskData }) {
             <div className="task-description">
               <textarea
                 name="description"
-                value={taskData.description}
+                value={initialTaskData.description}
                 onChange={handleChange}
                 placeholder="Task Description"
               ></textarea>
@@ -39,7 +55,7 @@ export default function TaskBox({ taskData }) {
               <input
                 type="text"
                 name="dueDate"
-                value={taskData.dueDate}
+                value={initialTaskData.due_date}
                 onChange={handleChange}
               />
             </div>
@@ -51,12 +67,12 @@ export default function TaskBox({ taskData }) {
         ) : (
           <div clasName="task-presentation">
             <div className="task-title">
-              <h3>{taskData.title}</h3>
+              <h3>{initialTaskData.title}</h3>
             </div>
             <div className="task-description"></div>
-            <p>{taskData.description}</p>
+            <p>{initialTaskData.description}</p>
             <div className="task-due-date">
-              <h4>{taskData.dueDate}</h4>
+              <h4>Due by: {initialTaskData.due_date}</h4>
             </div>
             <div>
               <button onClick={toggleEditTaskDetails}>Edit details</button>
@@ -65,7 +81,11 @@ export default function TaskBox({ taskData }) {
         )}
       </div>
       <div className="Task Status">
-        <checkbox />
+        <input
+          type="checkbox"
+          checked={taskData.status === "done"}
+          onChange={handleStatusChange}
+        />
       </div>
     </section>
   );
