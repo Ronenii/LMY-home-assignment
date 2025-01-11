@@ -34,7 +34,7 @@ const isUsernameExists = async (res, username) => {
 
 export const loginUser = async (req, res, next) => {
   try {
-    const { username, password } = req.body.data;
+    const { username, password } = req.body;
     if (!validateUsernameAndPassword(res, username, password)) return;
 
     const user = await verifyUserService(username, password);
