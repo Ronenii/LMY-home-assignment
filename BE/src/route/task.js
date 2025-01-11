@@ -4,28 +4,29 @@ import {
   getTaskById,
   getAllTasks,
   updateTaskDetails,
-  updateTaskStatus,
+  updateTaskStatus
 } from "../controller/taskController.js";
 import express from "express";
+import { authenticateToken } from "../middleware/authHandler.js";
 
 const router = express.Router();
 
 // Get all tasks
-router.get("/", getAllTasks);
+router.get("/", authenticateToken, getAllTasks);
 
 // Get task by ID
-router.get("/:id", getTaskById);
+router.get("/:id", authenticateToken, getTaskById);
 
 // Create task
-router.post("/", createTask);
+router.post("/", authenticateToken, createTask);
 
 // Update task status
-router.put("/status/:id", updateTaskStatus);
+router.put("/status/:id", authenticateToken, updateTaskStatus);
 
 // Update task details
-router.put("/details/:id", updateTaskDetails);
+router.put("/details/:id", authenticateToken, updateTaskDetails);
 
 // Delete task
-router.delete("/:id", deleteTask);
+router.delete("/:id", authenticateToken, deleteTask);
 
 export default router;
