@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import TaskBox from "../cmps/task/TaskBox";
 import { fetchTasks } from "../services/taskService";
+import TaskPageBar from "../cmps/task/TaskPageBar";
 
 export default function TaskPage() {
   const [tasks, setTasks] = useState([]);
@@ -24,10 +25,13 @@ export default function TaskPage() {
   }
 
   return (
-    <div className="task-list">
-      {tasks.map((task) => (
-        <TaskBox key={task.id} taskData={task} />
-      ))}
+    <div className="task-page-container">
+      <TaskPageBar /> {/* Directly include the TaskPageBar component */}
+      <div className="task-list">
+        {tasks.map((task) => (
+          <TaskBox key={task.id} taskData={task} />
+        ))}
+      </div>
     </div>
   );
 }
