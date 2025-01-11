@@ -26,7 +26,7 @@ const isUsernameExists = async (res, username) => {
   const user = await getUserByUsernameService(username);
 
   if (user) {
-    handleResponse(res, 400, `username ${username} doesn't exist`);
+    handleResponse(res, 400, `username ${username} already exists`);
     return true;
   }
   return false;
