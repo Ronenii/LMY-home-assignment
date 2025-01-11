@@ -54,18 +54,18 @@ export const updateTaskDetailsService = async (
   description = "",
   dueDate = null
 ) => {
-  let query = "UPDATE tasks SET title=$1, description=$2 WHERE user_id=$3";
-  const params = [title, description, userId];
+  let query = "UPDATE tasks SET title=$1, description=$2";
+  const params = [title, description];
 
   // Conditionally add due_date to the query
   if (dueDate !== null) {
-    query += ", due_date=$3";
+    query += `, due_date=$3`;
     params.push(dueDate);
   }
 
-  // Finalize query with WHERE clause
-  query += ` WHERE id=$${params.length + 1} RETURNING *`;
-  params.push(id);
+  // Finalize the query with WHERE clause
+  query += ` WHERE user_id=$${params.length + 1} AND id=$${params.length + 2} RETURNING *`;
+  params.push(userId, id);
 
   const result = await queryDB(query, params);
   return result.rows[0];

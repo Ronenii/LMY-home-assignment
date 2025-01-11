@@ -10,15 +10,23 @@ dotenv.config();
 let postgresClient;
 let server;
 
+const mockUserId = 123;
+
 const newTask = {
   title: "Test",
   description: "Test",
-  due_date: "2080-01-01",
+  due_date: "2080-01-01"
 };
 
-const normalizeDate = (date) => new Date(date).toISOString().split("T")[0];
+// Mock authentication middleware to populate req.user
+jest.mock("../../middleware/authHandler.js", () => ({
+  authenticateToken: jest.fn((req, res, next) => {
+    req.user = { userId: mockUserId }; // Mock user object
+    next();
+  })
+}));
 
-// Connect to test container and create tasks tabler.
+// Connect to test container and create tasks table.
 describe("/api/task integration tests", () => {
   beforeAll(async () => {
     const databaseUri = process.env.TEST_DATABASE_URL;
@@ -34,7 +42,8 @@ describe("/api/task integration tests", () => {
           description TEXT,
           due_date DATE,
           status VARCHAR(50) DEFAULT 'open',
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          user_id INT
       );
     `);
     console.log("Database initialized for testing.");
@@ -79,7 +88,7 @@ describe("/api/task integration tests", () => {
     expect(res.body).toEqual({
       data: [],
       message: "Tasks fetched successfully.",
-      status: 200,
+      status: 200
     });
   });
 
@@ -87,7 +96,7 @@ describe("/api/task integration tests", () => {
     const newTask = {
       title: "Test",
       description: "Test",
-      due_date: "2080-01-01",
+      due_date: "2080-01-01"
     };
 
     const res = await request(server).post("/api/task").send(newTask);
@@ -100,8 +109,8 @@ describe("/api/task integration tests", () => {
         id: 1,
         title: newTask.title,
         description: newTask.description,
-        status: "open",
-      }),
+        status: "open"
+      })
     });
   });
 
@@ -119,8 +128,8 @@ describe("/api/task integration tests", () => {
         id: id,
         title: newTask.title,
         description: newTask.description,
-        status: "open",
-      }),
+        status: "open"
+      })
     });
   });
 
@@ -142,8 +151,8 @@ describe("/api/task integration tests", () => {
         id: id,
         title: newTask.title,
         description: newTask.description,
-        status: newStatus,
-      }),
+        status: newStatus
+      })
     });
   });
 });
