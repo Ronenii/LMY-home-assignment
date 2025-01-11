@@ -34,6 +34,8 @@ export const createTaskService = async (
   description = "",
   due_date = null
 ) => {
+  console.log("Inserting task:", { title, description, due_date }); // Debug log
+
   const result = await queryDB(
     "INSERT INTO tasks (title, description, due_date) VALUES ($1, $2, $3) RETURNING *",
     [title, description, due_date]

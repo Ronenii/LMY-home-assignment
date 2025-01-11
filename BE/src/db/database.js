@@ -1,7 +1,7 @@
 import pkg from "pg";
 import dotenv from "dotenv";
 
-const { Pool } = pkg;
+const { Pool, types } = pkg;
 
 dotenv.config();
 
@@ -15,6 +15,11 @@ if (!connectionString) {
     "No database connection string provided. Please set DATABASE_URL or TEST_DATABASE_URL in your .env file."
   );
 }
+
+// Dates were being saved as timestamps. This seems to fix it
+const DATE_OID = 1082;
+types.setTypeParser(DATE_OID, (value) => value);
+
 
 const pool = new Pool({ connectionString });
 

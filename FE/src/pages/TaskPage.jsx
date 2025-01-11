@@ -9,7 +9,7 @@ export default function TaskPage() {
   useEffect(() => {
     const getTasks = async () => {
       const fetchedTasks = await fetchTasks();
-      setTasks(fetchTasks);
+      setTasks(fetchedTasks);
       setLoading(false);
     };
     getTasks();
