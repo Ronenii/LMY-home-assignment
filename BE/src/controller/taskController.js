@@ -106,7 +106,7 @@ export const createTask = async (req, res, next) => {
   if (!title) {
     return handleResponse(res, 400, "Task title is required.");
   }
-
+  if (!validateDueDate(res, due_date)) return;
   try {
     const newTask = await createTaskService(title, description, due_date);
 
