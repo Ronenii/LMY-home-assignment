@@ -1,0 +1,51 @@
+.task-create-form-container {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px; /* Slightly larger padding for better spacing */
+  max-width: 300px; /* Adjusted width for a better layout */
+  margin: 12px auto;
+  font-size: 0.9rem;
+
+  .task-create-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      box-sizing: border-box; /* Ensure padding is included in width */
+    }
+
+    textarea {
+      resize: none; /* Prevent resizing for a cleaner layout */
+      height: 80px; /* Fixed height for consistency */
+    }
+
+    .task-create-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+
+      button {
+        padding: 8px 12px;
+        border: none;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        background-color: #007bff;
+        color: white;
+      }
+    }
+  }
+}

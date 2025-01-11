@@ -2,19 +2,26 @@ import { useEffect, useState } from "react";
 import TaskBox from "../cmps/task/TaskBox";
 import { fetchTasks } from "../services/taskService";
 import TaskPageBar from "../cmps/task/TaskPageBar";
+import TaskCreateForm from "../cmps/task/TaskCreateForm";
 
 export default function TaskPage() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchAllTasks = async () => {
+    setLoading(true);
+    const fetchedTasks = await fetchTasks();
+    setTasks(fetchedTasks);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const getTasks = async () => {
-      const fetchedTasks = await fetchTasks();
-      setTasks(fetchedTasks);
-      setLoading(false);
-    };
-    getTasks();
+    fetchAllTasks();
   }, []);
+
+  const onTaskCreated = () => {
+    fetchAllTasks();
+  };
 
   if (loading) {
     return <p>Fetching tasks...</p>;
@@ -27,6 +34,7 @@ export default function TaskPage() {
   return (
     <div className="task-page-container">
       <TaskPageBar /> {/* Directly include the TaskPageBar component */}
+      <TaskCreateForm onTaskCreated={onTaskCreated} />
       <div className="task-list">
         {tasks.map((task) => (
           <TaskBox key={task.id} taskData={task} />

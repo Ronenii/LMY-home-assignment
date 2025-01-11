@@ -10,59 +10,85 @@
   max-width: 200px;
   margin: 12px auto;
   font-size: 0.9rem;
-}
 
-.task-details {
-  grid-row: 1;
-  grid-column: 1 / span 1;
-  text-align: center;
-}
-
-.task-status {
-  grid-row: 2;
-  grid-column: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  input[type="checkbox"] {
-    transform: scale(1);
-    cursor: pointer;
+  .task-details {
+    grid-row: 1;
+    grid-column: 1 / span 1;
+    text-align: center;
   }
-}
 
-.task-edit-form,
-.task-presentation {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
+  .task-status {
+    grid-row: 2;
+    grid-column: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-.task-due-date,
-.task-creation-date,
-.task-title,
-.task-description {
-  margin-bottom: 4px;
-}
+    input[type="checkbox"] {
+      transform: scale(1);
+      cursor: pointer;
+    }
+  }
 
-button {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-}
+  .task-edit-form,
+  .task-presentation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
 
-button + button {
-  margin-left: 6px;
-}
+    input,
+    textarea {
+      width: 100%;
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      box-sizing: border-box; /* Include padding in width */
+    }
 
-.edit-button {
-  grid-row: 3;
-  grid-column: 1 / span 2;
-  display: flex;
-  justify-content: center;
+    textarea {
+      resize: none; /* Prevent resizing */
+      height: 80px; /* Match task create height */
+    }
+
+    label {
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
+  }
+
+  .task-due-date,
+  .task-creation-date,
+  .task-title,
+  .task-description {
+    margin-bottom: 4px;
+  }
+
+  button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #0056b3;
+    }
+  }
+
+  button + button {
+    margin-left: 6px;
+  }
+
+  .edit-button {
+    grid-row: 3;
+    grid-column: 1 / span 2;
+    display: flex;
+    justify-content: center;
+  }
 }
