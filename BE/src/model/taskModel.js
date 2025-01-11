@@ -29,13 +29,7 @@ export const getTaskByIdService = async (id) => {
   return result.rows[0];
 };
 
-export const createTaskService = async (
-  title,
-  description = "",
-  due_date = null
-) => {
-  console.log("Inserting task:", { title, description, due_date }); // Debug log
-
+export const createTaskService = async (title, description = "", due_date = null) => {
   const result = await queryDB(
     "INSERT INTO tasks (title, description, due_date) VALUES ($1, $2, $3) RETURNING *",
     [title, description, due_date]
@@ -45,20 +39,15 @@ export const createTaskService = async (
 };
 
 export const updateTaskStatusService = async (id, status) => {
-  const result = await queryDB(
-    "UPDATE tasks SET status=$1 WHERE id = $2 RETURNING *",
-    [status, id]
-  );
+  const result = await queryDB("UPDATE tasks SET status=$1 WHERE id = $2 RETURNING *", [
+    status,
+    id
+  ]);
 
   return result.rows[0];
 };
 
-export const updateTaskDetailsService = async (
-  id,
-  title,
-  description = "",
-  dueDate = null
-) => {
+export const updateTaskDetailsService = async (id, title, description = "", dueDate = null) => {
   let query = "UPDATE tasks SET title=$1, description=$2";
   const params = [title, description];
 
@@ -77,8 +66,6 @@ export const updateTaskDetailsService = async (
 };
 
 export const deleteTaskService = async (id) => {
-  const result = await queryDB("DELETE FROM tasks WHERE id = $1 RETURNING *", [
-    id,
-  ]);
+  const result = await queryDB("DELETE FROM tasks WHERE id = $1 RETURNING *", [id]);
   return result.rows[0];
 };
