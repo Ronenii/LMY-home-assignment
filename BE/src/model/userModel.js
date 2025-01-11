@@ -1,8 +1,25 @@
-import { queryDB } from "../db/database";
+import { queryDB } from "../db/database.js";
+import bcrypt from "bcrypt";
 
-export const getAllUsersService = async () => {};
+export const getAllUsersService = async () => {
+  try {
+    const result = await queryDB("SELECT * FROM users");
 
-export const getUserByIdService = async () => {};
+    return result.rows;
+  } catch (err) {
+    throw new Error(`Error fetching users: ${err.message}`);
+  }
+};
+
+export const getUserByIdService = async (id) => {
+  try {
+    const result = await queryDB("SELECT * FROM users WHERE id = $1", [id]);
+
+    return result.rows[0];
+  } catch (err) {
+    throw new Error(`Error fetching user by id: ${err.message}`);
+  }
+};
 
 export const getUserByUsernameService = async (username) => {
   try {

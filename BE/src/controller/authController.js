@@ -1,5 +1,10 @@
-import { createUserService, getUserByUsernameService, verifyUserService } from "../model/userModel";
+import {
+  createUserService,
+  getUserByUsernameService,
+  verifyUserService
+} from "../model/userModel.js";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 // Standardized response function
 const handleResponse = (res, status, message, data = null) => {
@@ -18,9 +23,9 @@ const validateUsernameAndPassword = (res, username, password) => {
   return true;
 };
 const isUsernameExists = async (res, username) => {
-  const result = await getUserByUsernameService(username);
+  const user = await getUserByUsernameService(username);
 
-  if (result.rows.length === 0) {
+  if (user) {
     handleResponse(res, 400, `username ${username} doesn't exist`);
     return true;
   }
@@ -30,7 +35,7 @@ const isUsernameExists = async (res, username) => {
 export const loginUser = async (req, res, next) => {
   try {
     const { username, password } = req.body.data;
-    if (!validateUsernameAndPassword(username, password)) return;
+    if (!validateUsernameAndPassword(res, username, password)) return;
 
     const user = await verifyUserService(username, password);
 
@@ -45,17 +50,17 @@ export const loginUser = async (req, res, next) => {
 };
 
 export const registerUser = async (req, res, next) => {
-  const { username, password } = req.body.data;
+  const { username, password } = req.body;
 
-  if (!validateUsernameAndPassword(username, password)) return;
-  if (isUsernameExists) return;
+  if (!validateUsernameAndPassword(res, username, password)) return;
+  if (await isUsernameExists(res, username)) return;
   try {
     const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    const res = await createUserService(username, hashedPassword);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const user = await createUserService(username, hashedPassword);
     handleResponse(res, 201, "User created successfully", {
-      username: res.username,
-      id: res.id
+      username: user.username,
+      id: user.id
     });
   } catch (err) {
     next(err);
