@@ -16,15 +16,15 @@ services:
     networks:
       - task-manager-network
 
-#   be:
-#     image: ronenii/lmy-be:1.0
-#     container_name: lmy-be
-#     ports:
-#       - "8000:8000"
-#     environment:
-#       DB_HOST: task-manager-db
-#     networks:
-#       - task-manager-network
+  be:
+    image: ronenii/lmy-be:1.1
+    container_name: lmy-be
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: task-manager-db
+    networks:
+      - task-manager-network
 
 networks:
   task-manager-network:
