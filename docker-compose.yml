@@ -12,7 +12,17 @@ services:
       POSTGRES_DB: task_manager
     volumes:
       - ./BE/docker/db_data:/var/lib/postgresql/data
-      - ./BE/docker/init.sql:/docker-entrypoint-initdb.d/init.sql  # Maps the local SQL file ./docker/init.sql to the container’s initialization directory to run when the container starts.
+      - ./BE/docker/init.sql:/docker-entrypoint-initdb.d/init.sql # Maps the local SQL file ./docker/init.sql to the container’s initialization directory to run when the container starts.
+    networks:
+      - task-manager-network
+
+  be:
+    image: ronenii/lmy-be:1.0
+    container_name: lmy-be
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: task-manager-db
     networks:
       - task-manager-network
 
