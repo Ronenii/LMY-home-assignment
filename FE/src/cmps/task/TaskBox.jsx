@@ -2,26 +2,34 @@ import { useState } from "react";
 import { updateTaskStatus } from "../../services/taskService";
 
 export default function TaskBox({ taskData: initialTaskData, onDelete, onUpdate }) {
-  const [taskData, setTaskData] = useState(initialTaskData);
+  const [taskData, setTaskData] = useState(initialTaskData); // Current task state
+  const [draftData, setDraftData] = useState(initialTaskData); // Editable draft state
   const [isEditingDetails, setIsEditingDetails] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setTaskData((prevState) => ({ ...prevState, [name]: value })); // Ensure state is updated
+    setDraftData((prevState) => ({ ...prevState, [name]: value })); // Update only the draft
   };
 
   const toggleEditTaskDetails = () => {
+    setDraftData(taskData); // Reset the draft to match the original task data
     setIsEditingDetails(!isEditingDetails);
   };
 
   const handleSubmit = async () => {
     try {
-      await onUpdate(taskData.id, {
-        title: taskData.title,
-        description: taskData.description,
-        due_date: taskData.due_date
+      const updatedTask = await onUpdate(taskData.id, {
+        title: draftData.title,
+        description: draftData.description,
+        due_date: draftData.due_date
       });
-      setIsEditingDetails(false);
+
+      if (updatedTask) {
+        setTaskData(updatedTask); // Update the current state with backend response
+        setIsEditingDetails(false);
+      } else {
+        console.error("Task update failed: No updated task returned from the backend.");
+      }
     } catch (err) {
       console.error("Failed to update task:", err);
     }
@@ -57,7 +65,7 @@ export default function TaskBox({ taskData: initialTaskData, onDelete, onUpdate 
               <input
                 type="text"
                 name="title"
-                value={taskData.title}
+                value={draftData.title} // Use draft state for editing
                 onChange={handleChange}
                 placeholder="Task title"
               />
@@ -65,7 +73,7 @@ export default function TaskBox({ taskData: initialTaskData, onDelete, onUpdate 
             <div className="task-description">
               <textarea
                 name="description"
-                value={taskData.description}
+                value={draftData.description} // Use draft state for editing
                 onChange={handleChange}
                 placeholder="Task Description"
               ></textarea>
@@ -74,7 +82,7 @@ export default function TaskBox({ taskData: initialTaskData, onDelete, onUpdate 
               <input
                 type="date"
                 name="due_date"
-                value={taskData.due_date}
+                value={draftData.due_date} // Use draft state for editing
                 onChange={handleChange}
               />
             </div>
