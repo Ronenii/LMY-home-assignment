@@ -2,7 +2,7 @@ import {
   createTask,
   deleteTask,
   getTaskById,
-  getTasks,
+  getAllTasks,
   updateTaskDetails,
   updateTaskStatus,
 } from "../controller/taskController.js";
@@ -11,7 +11,7 @@ import express from "express";
 const router = express.Router();
 
 // Get all tasks
-router.get("/", getTasks);
+router.get("/", getAllTasks);
 
 // Get task by ID
 router.get("/:id", getTaskById);

@@ -44,9 +44,42 @@ const validateTaskFound = (res, task) => {
   return true;
 };
 
-export const getTasks = async (req, res, next) => {
+const validateCorrectStatus = (res, status) => {
+  const validStatuses = ["open", " done"];
+  if (status && !validStatuses.includes(status.toLowerCase())) {
+    handleResponse(res, 400, "Status must be 'open' or 'done'");
+    return false;
+  }
+  return true;
+};
+
+const validateOrderBy = (res, orderBy) => {
+  const validOrderBy = ["created_at", "due_date"];
+  if (orderBy && !validOrderBy.includes(orderBy.toLowerCase())) {
+    handleResponse(res, 400, "OrderBy must be by 'created_ad' or 'due_date'");
+    return false;
+  }
+  return true;
+};
+
+const validateOrder = (res, order) => {
+  const validOrder = ["asc", "desc"];
+  if (order && !validOrder.includes(order.toLowerCase())) {
+    handleResponse(res, 400, "Order must be by 'asc' or 'desc'");
+    return false;
+  }
+  return true;
+};
+
+export const getAllTasks = async (req, res, next) => {
+  const { status, orderBy, order } = req.query;
+
+  if (!validateCorrectStatus(status)) return;
+  if (!validateOrderBy(orderBy)) return;
+  if (!validateOrder(order)) return;
+
   try {
-    const tasks = await getAllTasksService();
+    const tasks = await getAllTasksService(status, orderBy, order);
     handleResponse(res, 200, "Tasks fetched successfully.", tasks);
   } catch (err) {
     next(err);
@@ -88,6 +121,7 @@ export const updateTaskStatus = async (req, res, next) => {
   const id = req.params.id;
 
   if (!validateIsIdProvided(res, id)) return;
+  if (!validateCorrectStatus(res, status)) return;
 
   try {
     const task = await updateTaskStatusService(id, status);

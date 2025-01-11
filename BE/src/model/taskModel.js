@@ -1,8 +1,27 @@
 import { queryDB } from "../db/database.js";
 
-export const getAllTasksService = async () => {
-  const result = await queryDB("SELECT * FROM tasks");
-  return result.rows;
+export const getAllTasksService = async (status, orderBy, order) => {
+  try {
+    let query = "SELECT * FROM tasks";
+    const params = [];
+    let idx = 1;
+
+    if (status) {
+      query += ` WHERE status = $${idx}`;
+      params.push(status);
+      idx++;
+    }
+
+    if (orderBy) {
+      const direction = order ? order.toUpperCase() : "ASC";
+      query += ` ORDER BY ${orderBy} ${direction}`;
+    }
+
+    const result = await queryDB(query, params);
+    return result.rows;
+  } catch (err) {
+    throw new Error(`Error fetching tasks: ${err.message}`);
+  }
 };
 
 export const getTaskByIdService = async (id) => {
