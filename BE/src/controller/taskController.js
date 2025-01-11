@@ -4,7 +4,7 @@ import {
   getAllTasksService,
   getTaskByIdService,
   updateTaskDetailsService,
-  updateTaskStatusService,
+  updateTaskStatusService
 } from "../model/taskModel.js";
 
 // Standardized response function
@@ -12,7 +12,7 @@ const handleResponse = (res, status, message, data = null) => {
   res.status(status).json({
     status,
     message,
-    data,
+    data
   });
 };
 
@@ -79,7 +79,7 @@ export const getAllTasks = async (req, res, next) => {
   if (!validateOrder(order)) return;
 
   try {
-    const tasks = await getAllTasksService(status, orderBy, order);
+    const tasks = await getAllTasksService(req.user.userId, status, orderBy, order);
     handleResponse(res, 200, "Tasks fetched successfully.", tasks);
   } catch (err) {
     next(err);
@@ -92,7 +92,7 @@ export const getTaskById = async (req, res, next) => {
   if (!validateIsIdProvided(res, id)) return;
 
   try {
-    const task = await getTaskByIdService(id);
+    const task = await getTaskByIdService(req.user.userId, id);
     if (!validateTaskFound(res, task)) return;
     handleResponse(res, 200, `Retrived task ${id}`, task);
   } catch (err) {
@@ -108,7 +108,7 @@ export const createTask = async (req, res, next) => {
   }
   if (!validateDueDate(res, due_date)) return;
   try {
-    const newTask = await createTaskService(title, description, due_date);
+    const newTask = await createTaskService(req.user.userId, title, description, due_date);
 
     handleResponse(res, 201, "Task created successfully.", newTask);
   } catch (err) {
@@ -124,7 +124,7 @@ export const updateTaskStatus = async (req, res, next) => {
   if (!validateCorrectStatus(res, status)) return;
 
   try {
-    const task = await updateTaskStatusService(id, status);
+    const task = await updateTaskStatusService(req.user.userId, id, status);
     if (!validateTaskFound(res, task)) return;
     handleResponse(res, 200, `Task ${id} status updated to ${status}.`, task);
   } catch (err) {
@@ -144,7 +144,7 @@ export const updateTaskDetails = async (req, res, next) => {
   }
 
   try {
-    const task = await updateTaskDetailsService(id, title, description, due_date);
+    const task = await updateTaskDetailsService(req.user.userId, id, title, description, due_date);
     if (!validateTaskFound(res, task)) return;
     handleResponse(res, 200, `Task ${id} details updated successfully.`, task);
   } catch (err) {
@@ -158,7 +158,7 @@ export const deleteTask = async (req, res, next) => {
   if (!validateIsIdProvided(res, id)) return;
 
   try {
-    const deletedTask = await deleteTaskService(id);
+    const deletedTask = await deleteTaskService(req.user.userId, id);
     if (!validateTaskFound(res, deleteTask)) return;
     handleResponse(res, 200, `Deleted task ${id} successfully.`, deletedTask);
   } catch (err) {
